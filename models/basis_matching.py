@@ -4,7 +4,7 @@ import numpy as np
 import math
 
 #package for computing individual gradients
-from backpack import backpack, extend
+from backpack import extend, backpack
 from backpack.extensions import BatchGrad
 
 def flatten_tensor(tensor_list):

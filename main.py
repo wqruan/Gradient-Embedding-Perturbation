@@ -189,7 +189,7 @@ def train(epoch):
     else: # manually sample minibatchs for SVHN
         sample_idxes = np.arange(n_training)
         np.random.shuffle(sample_idxes)
-
+    is_first = 0
     for batch_idx in range(steps):
         if(args.dataset=='svhn'):
             current_batch_idxes = sample_idxes[batch_idx*args.batchsize : (batch_idx+1)*args.batchsize]
@@ -203,7 +203,9 @@ def train(epoch):
             logging = batch_idx % 20 == 0
             ## compute anchor subspace
             optimizer.zero_grad()
-            net.gep.get_anchor_space(net, loss_func=loss_func, logging=logging)
+            if is_first ==0:
+                net.gep.get_anchor_space(net, loss_func=loss_func, logging=logging)
+                is_first+=1
             ## collect batch gradients
             batch_grad_list = []
             optimizer.zero_grad()
@@ -255,7 +257,7 @@ def train(epoch):
         correct += predicted.eq(targets.data).float().cpu().sum()
         acc = 100.*float(correct)/float(total)
     t1 = time.time()
-    print('Train loss:%.5f'%(train_loss/(batch_idx+1)), 'time: %d s'%(t1-t0), 'train acc:', acc, end=' ')
+    print('Train loss:%.5f'%(train_loss/(batch_idx+1)), 'time: %d s'%(t1-t0), 'train acc:', acc, '\n')
     return (train_loss/batch_idx, acc)
 
 
